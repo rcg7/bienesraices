@@ -121,11 +121,12 @@ estaAtenticado();
 
         move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . $nombreImagen );
 
-
+        // echo $query;
+        $resultado = mysqli_query($db, $query);
 
         if($resultado) {
-           // Redireccionar al usuario
 
+           // Redireccionar al usuario
            header('Location: /admin?resultado=1');
         }
 
