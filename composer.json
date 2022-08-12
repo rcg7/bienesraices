@@ -1,0 +1,22 @@
+{
+    "name": "vicroria/bienesraices",
+    "description": "Creando un projecto con PDO",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Vicroria\\Bienesraices\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "rcg7",
+            "email": "racaga85@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "./clases"
+        }
+    }
+}
