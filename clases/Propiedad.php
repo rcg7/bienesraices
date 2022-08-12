@@ -17,7 +17,7 @@ class Propiedad {
     public $wc;
     public $aparcamiento;
     public $creado;
-    public $vendedorId;
+    public $vendedores_id;
 
         // DEFINIR LA CONEXIÓN A LA BASE DE DATOS
             public static function setDB($database) {
@@ -40,18 +40,39 @@ class Propiedad {
     }
 
     public function guardar() {
-        echo "Guardando en la base de datos";
 
         // Sanitizar los datos
         $atributos =$this->sanitizarAtributos();
 
          // Insertar en la base de datos
-         $query = " INSERT INTO propiedades (titulo, precio, imagen, descripcion, habitaciones, wc, aparcamiento, creado, vendedores_id ) VALUES ( '$this->titulo', '$this->precio', '$this->imagen', '$this->descripcion', '$this->habitaciones', '$this->wc', '$this->aparcamiento', '$this->creado', '$this->vendedores_id' ) ";
+         $query = " INSERT INTO propiedades ( ";
+         $query .= join(', ', array_keys($atributos));
+         $query .= " ) VALUES (' ";
+         $query .= join("', '", array_values($atributos));
+         $query .= " ') ";
 
          $resultado = self::$db->query($query);
+
+         debugear($resultado);
+    }
+
+    // Identificar y unir los atributos de la BD
+    public function atributos() {
+        $atributos = [];
+        foreach(self::$columnasDB as $columna) {
+            if($columna === 'id') continue;
+            $atributos[$columna] = $this->$columna;
+        }
+        return $atributos;
     }
 
     public function sanitizarAtributos() {
+        $atributos = $this->atributos();
+        $sanitizado = [];
 
+        foreach($atributos as $key => $value ) {
+            $sanitizado[$key] = self::$db->escape_string($value);
+        }
+        return $sanitizado;
     }
 }
