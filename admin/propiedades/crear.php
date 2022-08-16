@@ -4,10 +4,9 @@
 require '../../includes/app.php';
 
 use App\Propiedad;
+use Intervention\Image\ImageManagerStatic as Image;
 
-
-
-estaAtenticado();
+estaAutenticado();
 
     // Base de datos
     $db = conectarDB();
@@ -17,7 +16,7 @@ estaAtenticado();
     $resultado = mysqli_query($db, $consulta);
 
     // Arreglo con mensajes de errores
-    $errores = [];
+    $errores = Propiedad::getErrores();
 
 
     $titulo = '';
@@ -33,101 +32,42 @@ estaAtenticado();
     // Ejecutar el código después de que el usuario envia el formulario
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+        /** Crear una nueva instancia  */
         $propiedad = new Propiedad($_POST);
 
-        $propiedad->guardar();
-       
-
-        
-        // echo "<pre>";
-        // var_dump($_POST);
-        // echo "</pre>";
-
-        // echo "<pre>";
-        // var_dump($_FILES);
-        // echo "</pre>";
-
-      
-        $titulo = mysqli_real_escape_string( $db, $_POST['titulo'] );
-        $precio = mysqli_real_escape_string( $db, $_POST['precio'] );
-        $descripcion = mysqli_real_escape_string( $db, $_POST['descripcion'] );
-        $habitaciones = mysqli_real_escape_string( $db, $_POST['habitaciones'] );
-        $wc = mysqli_real_escape_string( $db, $_POST['wc'] );
-        $aparcamiento = mysqli_real_escape_string( $db, $_POST['aparcamiento'] );
-        $vendedores_id = mysqli_real_escape_string( $db, $_POST['vendedores_id'] );
-        $creado = date('Y/m/d');
-
-
-    // Asignar files hacia una variable
-
-    $imagen = $_FILES['imagen'];
-
-
-    //Mensajes de errores
-
-        if(!$titulo) {
-            $errores[] = "Debes añadir un titulo";
-        }
-        if(!$precio) {
-            $errores[] = "El precio es Obligatorio";
-        }
-        if( strlen( $descripcion ) < 50 ) {
-            $errores[] = "La descripción es Obligatoria y debe tener al menos 50 caracteres";
-        }
-        if(!$habitaciones) {
-            $errores[] = "El número de habitaciones es Obligatorio";
-        }
-        if(!$wc) {
-            $errores[] = "El número de baños es Obligatorio";
-        }
-        if(!$aparcamiento) {
-            $errores[] = "El número de estacionamientos es Obligatorio";
-        }
-        if(!$vendedores_id) {
-            $errores[] = "El vendedor es Obligatorio";
-        }
-
-        if( !$imagen['name'] || $imagen['error' ] ) {
-            $errores[] = 'La imagen es obligatoria';
-        }
-
-        // Validar por tamaño
-
-        $medida = 1000 * 1000;
-
-        if($imagen['size'] > $medida ) {
-            $errores[] = 'La imagen es muy pesada';
-        }
-
-        // Revisar que el array de errores este vacio
-
-        if(empty($errores)) {
 
         /** Subida de archivos */ 
 
-        // Crear carpeta
-
-        $carpetaImagenes = '../../imagenes/';
-
-        if(!is_dir($carpetaImagenes)) {
-            mkdir($carpetaImagenes);
-        }
-
         // Generar un nombre único
-
         $nombreImagen = md5( uniqid( rand(), true ) ) . ".jpg";
 
-        // Subir imagenes
+        // Setear la imagen
+        // Realiza un reslize a la imagen con intervention
+        if($_FILES['imagen']['tpm_name']) {
+        $image = Image::make($_FILES['imagen']['tmp_name'])->fit(800,600);
+        $propiedad->setImagen($nombreImagen);
+        }
 
-        move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . $nombreImagen );
+        // Validar
+        $errores = $propiedad->validar();
 
-        // echo $query;
-        $resultado = mysqli_query($db, $query);
+        if(empty($errores)) {
 
+        // Crear la carpeta para subir imagenes
+        if(!is_dir(CARPETA_IMAGENES)) {
+            mkdir(CARPETA_IMAGENES);
+        }
+
+        // Guardar la imagen en el servidor
+        $image->save(CARPETA_IMAGENES . $nombreImagen);
+
+        // Guarda en la base de datos
+        $resultado = $propiedad->guardar();
+
+        // Mensaje de éxito
         if($resultado) {
-
-           // Redireccionar al usuario
-           header('Location: /admin?resultado=1');
+            // Redireccionar al usuario
+            header('Location: /admin?resultado=1');
         }
 
     }

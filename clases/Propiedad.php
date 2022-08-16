@@ -7,6 +7,9 @@ class Propiedad {
     // Base de datos
     protected static $db;
     protected static $columnasDB = ['id', 'titulo', 'precio', 'imagen', 'descripcion', 'habitaciones', 'wc', 'aparcamiento', 'creado', 'vendedores_id'];
+
+    // Errores
+    protected static $errores = [];
     
     public $id;
     public $titulo;
@@ -53,7 +56,7 @@ class Propiedad {
 
          $resultado = self::$db->query($query);
 
-         debugear($resultado);
+         return $resultado;
     }
 
     // Identificar y unir los atributos de la BD
@@ -74,5 +77,56 @@ class Propiedad {
             $sanitizado[$key] = self::$db->escape_string($value);
         }
         return $sanitizado;
+    }
+
+    // Subida de archivos
+    public function setImagen($imagen) {
+        // Asignar el atributo de imagen el nombre de la imagen
+        if($imagen) {
+            $this->imagen = $imagen;
+        }
+    }
+
+    // Validación 
+    public static function getErrores() {
+        return self::$errores;
+    }
+
+    public function validar() {
+            //Mensajes de errores
+
+            if(!$this->titulo) {
+                self::$errores[] = "Debes añadir un titulo";
+            }
+
+            if(!$this->precio) {
+                self::$errores[] = "El precio es Obligatorio";
+            }
+
+            if( strlen( $this->descripcion ) < 50 ) {
+                self::$errores[] = "La descripción es Obligatoria y debe tener al menos 50 caracteres";
+            }
+
+            if(!$this->habitaciones) {
+                self::$errores[] = "El número de habitaciones es Obligatorio";
+            }
+
+            if(!$this->wc) {
+                self::$errores[] = "El número de baños es Obligatorio";
+            }
+
+            if(!$this->aparcamiento) {
+                self::$errores[] = "El número de estacionamientos es Obligatorio";
+            }
+
+            if(!$this->vendedores_id) {
+                self::$errores[] = "El vendedor es Obligatorio";
+            }
+
+            if(!$this->imagen ) {
+                 self::$errores[] = 'La imagen es obligatoria';
+             }
+
+            return self::$errores;
     }
 }
