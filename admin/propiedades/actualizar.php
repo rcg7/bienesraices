@@ -1,7 +1,7 @@
 <?php 
 
     require '../../includes/funciones.php';
-    $auth = estaAtenticado();
+    $auth = estaAutenticado();
 
 
     if(!$auth) {
