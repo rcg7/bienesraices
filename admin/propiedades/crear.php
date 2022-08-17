@@ -43,7 +43,7 @@ estaAutenticado();
 
         // Setear la imagen
         // Realiza un reslize a la imagen con intervention
-        if($_FILES['imagen']['tpm_name']) {
+        if($_FILES['imagen']['tmp_name']) {
         $image = Image::make($_FILES['imagen']['tmp_name'])->fit(800,600);
         $propiedad->setImagen($nombreImagen);
         }
