@@ -130,13 +130,20 @@ class Propiedad {
             return self::$errores;
     }
 
-    // Listar todas las propiedades
+    // Listar todas los registros
     public static function all() {
         $query ="SELECT * FROM propiedades";
 
         $resultado = self::consultarSQL($query);
 
-        return $resultado;
+        return array_shift( $resultado ) ;
+    }
+
+    // Busca una propiedad por su id
+    public static function find($id) {
+        $query = "SELECT * FROM propiedades WHERE id = ${id}";
+
+        $resultado = self::consultarSQL($query);
     }
 
     public static function consultarSQL($query) {
@@ -167,5 +174,14 @@ class Propiedad {
         }
 
         return $objeto;
+    }
+
+    // Sincroniza el objeto en memoria con los cambios realizados por el usuario
+    public function sincronizar( $args = [] ) {
+        foreach($args as $key => $value) {
+            if(property_exists($this, $key ) && is_null($value)) {
+                $this->$key = $value;
+            }
+        }
     }
 }
