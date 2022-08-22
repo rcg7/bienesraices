@@ -51,7 +51,7 @@
         placeholder="Ej: 3" 
         min="1" 
         max="9"  
-        value="<?php echo s( $propiedades->aparcamiento ); ?>">
+        value="<?php echo s( $propiedad->aparcamiento ); ?>">
 
 </fieldset>
 
