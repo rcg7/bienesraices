@@ -1,6 +1,7 @@
 <?php
 
 use App\Propiedad;
+use Intervention\Image\ImageManagerStatic as Image;
 
     require '../../includes/app.php';
 
@@ -29,57 +30,32 @@ use App\Propiedad;
     // Ejecutar el código después de que el usuario envia el formulario
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Asignar los atributos
-        $args = $_POST['propiedad'];
+            // Asignar los atributos
+            $args = $_POST['propiedad'];
 
-        $propiedad->sincronizar($args);
+            $propiedad->sincronizar($args);
 
-        $errores = $propiedad->validar();
-
-
-        if(empty($errores)) {
+            // Validación
+            $errores = $propiedad->validar();
 
 
-        // Crear carpeta
+            /**Subida de archivos **/
 
-         $carpetaImagenes = '../../imagenes/';
+            // Generar un nombre único
+            $nombreImagen = md5( uniqid( rand(), true ) ) . ".jpg";
 
-         if(!is_dir($carpetaImagenes)) {
-             mkdir($carpetaImagenes);
-         }
+            if($_FILES['propiedad']['tmp_name']['imagen']) {
+                $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
+                $propiedad->setImagen($nombreImagen);
+            }
 
-         $nombreImagen = '';
+            if(empty($errores)) {
+                // Almacenar la imagen 
+                $image->save(CARPETA_IMAGENES . $nombreImagen);
 
-        /** Subida de archivos */ 
-
-        if($imagen['name']) {
-
-        // Eliminar la imagen anterior
-            unlink($carpetaImagenes . $propiedad['imagen']);
-
-         // Generar un nombre único
-          $nombreImagen = md5( uniqid( rand(), true ) ) . ".jpg";
-
-         // Subir imagenes
-         move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . $nombreImagen );
-        }else {
-            $nombreImagen = $propiedad['imagen'];
+                $propiedad->guardar();
         }
-
-        // Insertar en la base de datos
-        $query = " UPDATE propiedades SET titulo = '${titulo}', precio = '${precio}', imagen = '${nombreImagen}', descripcion = '${descripcion}', habitaciones = ${habitaciones}, wc = ${wc}, aparcamiento = ${aparcamiento}, vendedores_id = ${vendedores_id} WHERE id = ${id} ";
-
-        // echo $query;
-        $resultado = mysqli_query($db, $query);
-
-        if($resultado) {
-           // Redireccionar al usuario
-           header('Location: /admin?resultado=2');
-        }
-
     }
-
-}
 
     incluirTemplate('header'); 
 ?>
