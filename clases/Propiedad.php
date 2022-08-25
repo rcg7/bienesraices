@@ -177,7 +177,7 @@ class Propiedad {
 
         $resultado = self::consultarSQL($query);
 
-        return array_shift( $resultado ) ;
+        return $resultado;
     }
 
     // Busca un registro por su id
