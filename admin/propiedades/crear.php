@@ -57,16 +57,8 @@ estaAutenticado();
         $image->save(CARPETA_IMAGENES . $nombreImagen);
 
         // Guarda en la base de datos
-        $resultado = $propiedad->guardar();
-
-        // Mensaje de éxito
-        if($resultado) {
-            // Redireccionar al usuario
-            header('Location: /admin?resultado=1');
-        }
-
+        $propiedad->guardar();
     }
-
 }
 
     incluirTemplate('header'); 
