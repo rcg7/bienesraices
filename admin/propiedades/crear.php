@@ -42,6 +42,10 @@ estaAutenticado();
         // Validar
         $errores = $propiedad->validar();
 
+        
+
+
+
         if(empty($errores)) {
 
         // Crear la carpeta para subir imagenes
