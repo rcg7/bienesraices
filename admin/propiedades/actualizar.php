@@ -25,7 +25,7 @@ use Intervention\Image\ImageManagerStatic as Image;
     // Arreglo con mensajes de errores
     $errores = Propiedad::getErrores();
 
-
+    
 
     // Ejecutar el código después de que el usuario envia el formulario
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
