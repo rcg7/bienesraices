@@ -29,10 +29,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             //Compara lo que se va a eliminar
             if($tipo === 'vendedor') {
-                 $vendedor = Vendedor::find($id);
+                 $vendedores = Vendedor::find($id);
                  $vendedor->eliminar();
             }else if($tipo === 'propiedad') {
-                 $propiedad = Propiedad::find($id);
+                 $propiedades = Propiedad::find($id);
                  $propiedad->eliminar();
             }
         }
