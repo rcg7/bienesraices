@@ -3,7 +3,7 @@
 namespace App;
 
 class Vendedor extends ActiveRecord {
-    protected static $tabla = 'vendedores_id'; 
+    protected static $tabla = 'vendedores'; 
     protected static $columnasDB = ['id', 'nombre', 'apellido', 'telefono'];
 
     public $id;

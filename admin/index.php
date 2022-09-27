@@ -9,7 +9,7 @@ use App\Vendedor;
 
 // Implementar un método para obtener todas las propiedades
 $propiedades = Propiedad::all();
-$propiedades = Vendedor::all();
+$vendedores = Vendedor::all();
 
 
 //Muestre el mensaje condicional
