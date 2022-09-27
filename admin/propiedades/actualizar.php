@@ -33,10 +33,10 @@ use Intervention\Image\ImageManagerStatic as Image;
             // Asignar los atributos
             $args = $_POST['propiedad'];
 
-            $propiedad->sincronizar($args);
+            $propiedades->sincronizar($args);
 
             // Validación
-            $errores = $propiedad->validar();
+            $errores = $propiedades->validar();
 
 
             /**Subida de archivos **/
@@ -46,7 +46,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
             if($_FILES['propiedad']['tmp_name']['imagen']) {
                 $image = Image::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
-                $propiedad->setImagen($nombreImagen);
+                $propiedades->setImagen($nombreImagen);
             }
 
             if(empty($errores)) {
@@ -54,7 +54,7 @@ use Intervention\Image\ImageManagerStatic as Image;
                 // Almacenar la imagen 
                 $image->save(CARPETA_IMAGENES . $nombreImagen);
                 }
-                $propiedad->guardar();
+                $propiedades->guardar();
         }
     }
 
