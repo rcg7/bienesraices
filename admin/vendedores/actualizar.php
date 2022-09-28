@@ -30,6 +30,10 @@ $vendedor = Vendedor::find($id);
 
     // Validación
     $errores = $vendedores->validar();
+
+    if(empty($errores)) {
+        $vendedores->guardar();
+    }
  }
 
  incluirTemplate('header'); 

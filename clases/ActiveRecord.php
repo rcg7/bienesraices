@@ -33,7 +33,7 @@ class ActiveRecord {
      $atributos = $this->sanitizarAtributos();
 
       // Insertar en la base de datos
-      $query = " INSERT INTO " .  static::$tabla  .  " ( ";
+      $query = " INSERT INTO " . static::$tabla . " ( ";
       $query .= join(', ', array_keys($atributos));
       $query .= " ) VALUES (' ";
       $query .= join("', '", array_values($atributos));
@@ -57,7 +57,7 @@ class ActiveRecord {
          $valores[] = "{$key}='{$value}'";
      }
 
-     $query = "UPDATE " .  static::$tabla  . " SET ";
+     $query = "UPDATE " . static::$tabla . " SET ";
      $query .= join(', ', $valores );
      $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
      $query .= " LIMIT 1 ";
@@ -72,7 +72,7 @@ class ActiveRecord {
 
  // Eliminar un registro
  public function eliminar() {
-      $query = "DELETE FROM " . static::$tabla  . "  WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
+      $query = "DELETE FROM " . static::$tabla . "  WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
       $resultado = self::$db->query($query);
      
       if($resultado) {
@@ -144,9 +144,18 @@ class ActiveRecord {
      return $resultado ;
  }
 
+ // Obtiene un determinado número de registros
+ public static function get($cantidad) {
+    $query = "SELECT * FROM " . static::$tabla . "LIMIT" . $cantidad;
+
+    $resultado = self::consultarSQL($query);
+
+    return $resultado ;
+}
+
  // Busca un registro por su id
  public static function find($id) {
-     $query = "SELECT * FROM " .  static::$tabla  . "  WHERE id = ${id}";
+     $query = "SELECT * FROM " . static::$tabla . "  WHERE id = ${id}";
 
      $resultado = self::consultarSQL($query);
 
